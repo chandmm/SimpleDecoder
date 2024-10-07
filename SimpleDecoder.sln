@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35122.118
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleDecoder", "SimpleDecoder\SimpleDecoder.csproj", "{DB70A486-4870-4A9A-9080-E2B1A43FC3CD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB70A486-4870-4A9A-9080-E2B1A43FC3CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB70A486-4870-4A9A-9080-E2B1A43FC3CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB70A486-4870-4A9A-9080-E2B1A43FC3CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB70A486-4870-4A9A-9080-E2B1A43FC3CD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {83977648-3124-4BC8-9A0C-429108A96642}
+	EndGlobalSection
+EndGlobal
