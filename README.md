@@ -1,11 +1,13 @@
 # SimpleDecoder
 Simple mp3 decoder. Simple here means using derivative works to learn and understand how to build an mp3 decoder. Purpose of which is to also write understandable code that is more verbose so that I give back to the community more easier to understand code.  This is for educational purpose for others and myself but can be used in any creative ways.
 
-## IS this used, where is examples on how to use it?
+## Where is this used, where are examples on how to use it?
 This library is used in my own audio project built around learning audio decoders.
 It is called **Digital Audio Experiment** and can be found on my repository here: [Digital Audio Experiment](https://github.com/chandmm/DigitalAudioExperiment)
 
 URL: https://github.com/chandmm/DigitalAudioExperiment
+
+That project too is for learning, see its readme document.
 
 ## Why did I do it?
 I wanted to see if I can, not because I should. I reached a point in my career where I should be able to tackle complex problems and so what could be the first hard step in a personal project than to build a complex decoder such as Mpeg 1 Layer III audio library. 
