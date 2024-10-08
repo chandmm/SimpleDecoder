@@ -18,7 +18,7 @@ Actually more that this is the primary reason equal to "Why did I do it". I want
 Originally I wanted to make exclusive use of the AI and work with it to build the decoder. However it looks like ChatGPT hit its limit fairly quickly. A few weeks was spent prompt engineering in order to get it to answer complex questions. Even breaking the complexity into smaller and smaller problem domains. In the end, I couldnt do without using others works in unisen. There are still much I dont understand and had to use direct copy of the code. That learning is still work in progress. 
 
 **How did I fair off?**
-I was able to study and understand the mp3 documentation. I was able to study and understand otehrs codes and relate that back to the document. There are quite complex areas especially with the filter banks which I still dont fully grasp and had to, for the moment use others code so I can move on and then come back to it as my understanding improves.
+I was able to study and understand the mp3 documentation. I was able to study and understand others codes and relate that back to the document. There are quite complex areas especially with the filter banks which I still dont fully grasp and had to, for the moment use others code so I can move on and then come back to it as my understanding improves.
 
 ## Specifications/details
 - This decoder only decodes MPEG 1 Layer 3 files. The intention was not to make a fully working mp3 decoder but learn how audio compression algorithms work along with playing audio electronically.
