@@ -252,6 +252,13 @@ namespace SimpleMp3Decoder.Logic
 
             _isSeekingMainDataBeginZero = false;
 
+            if (invalidFrameByteCountToRemove < 0)
+            {
+                DecoderUtils.UpdateAudioDataBufferStream(DecoderUtils.FrameBufferStream.PopToNewBufferStream());
+
+                return;
+            }
+
             DecoderUtils.UpdateAudioDataBufferStream(DecoderUtils.FrameBufferStream.PopToNewBufferStream());
 
             for (int gr = 0; gr < 2; gr++)
