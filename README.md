@@ -21,9 +21,9 @@ Originally I wanted to make exclusive use of the AI and work with it to build th
 I was able to study and understand the mp3 documentation. I was able to study and understand others codes and relate that back to the document. There are quite complex areas especially with the filter banks which I still dont fully grasp and had to, for the moment use others code so I can move on and then come back to it as my understanding improves.
 
 ## Specifications/details
-- This decoder only decodes MPEG 1 Layer 3 files. The intention was not to make a fully working mp3 decoder but learn how audio compression algorithms work along with playing audio electronically.
+- This decoder only decodes MPEG 1/2.5 Layer 3 files. The intention was not to make a fully working mp3 decoder but learn how audio compression algorithms work along with playing audio electronically.
 - This decoder can read VBR mp3's even though the source code does not specifically look for XING headers. It does this by reading each frame and decoding based on its header information about the frame. Eg frame size from its bitrate. As such it implicitely handles VBR, and not specifically.
-- There are issues. I made the buffer much too simple so some mp3's do fail to play correctly. Although in my testing, there arent very many mp3's that this decoder fails on. In saying that, failing on just one is enough to say this isnt 100% compatable with all mp3's.
+- Only plays layer 3 mpeg audio files. 
 - Standards: I ignored the maximum buffer limits. It was much simpler to write code that reads the whole frame, remove as needed and once the current frame is done, any left over data is in place as bit reservoir.
 - I wasnt aiming for performance, just readibility.
 - I have tried to keep as closely to the huffman tables described in the standards document as possible. This means I produced a json file that embodies those tables data. Inside the code I then use a tree graph algorithm to do the huffman code search which significantly boosted performance.

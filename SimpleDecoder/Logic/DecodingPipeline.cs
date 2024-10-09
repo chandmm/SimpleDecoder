@@ -203,33 +203,11 @@ namespace SimpleMp3Decoder.Logic
 
         private void VirtualisedDecodeFrame()
         {
-            if (DecoderUtils.AudioDataBufferStream != null)
-            {
-                DecoderUtils.AudioDataBufferStream.AlignToByteBoundary();
-            }
-
-            var invalidFrameByteCountToRemove = DecoderUtils.AudioDataBufferStream == null ? 0 : (DecoderUtils.AudioDataBufferStream.Count) - SideInfo.MainDataBegin;
-
-            if (invalidFrameByteCountToRemove > 0)
-            {
-                _ = DecoderUtils.AudioDataBufferStream?.PopRange(invalidFrameByteCountToRemove);
-            }
-
-            if (_isSeekingMainDataBeginZero
-                && SideInfo.MainDataBegin != 0)
-            {
-                IsFrameHealthy = false;
-                return;
-            }
-
-            _isSeekingMainDataBeginZero = false;
-
-            DecoderUtils.UpdateAudioDataBufferStream(DecoderUtils.FrameBufferStream.PopToNewBufferStream());
-
+            DecodeFrame(isVirtualisedDecode: true);
             DecoderUtils.AudioDataBufferStream.PopBits(GetMainDataActualSize());
         }
 
-        internal void DecodeFrame()
+        internal void DecodeFrame(bool isVirtualisedDecode = false)
         {
             if (DecoderUtils.AudioDataBufferStream != null)
             {
@@ -243,14 +221,12 @@ namespace SimpleMp3Decoder.Logic
                 _ = DecoderUtils.AudioDataBufferStream?.PopRange(invalidFrameByteCountToRemove);
             }
 
-            if (_isSeekingMainDataBeginZero
+            if (_frame.FrameId == 0
                 && SideInfo.MainDataBegin != 0)
             {
-                IsFrameHealthy = false;
+                DecoderUtils.UpdateAudioDataBufferStream(DecoderUtils.FrameBufferStream.PopToNewBufferStream());
                 return;
             }
-
-            _isSeekingMainDataBeginZero = false;
 
             if (invalidFrameByteCountToRemove < 0)
             {
@@ -260,6 +236,11 @@ namespace SimpleMp3Decoder.Logic
             }
 
             DecoderUtils.UpdateAudioDataBufferStream(DecoderUtils.FrameBufferStream.PopToNewBufferStream());
+
+            if (isVirtualisedDecode)
+            {
+                return;
+            }
 
             for (int gr = 0; gr < 2; gr++)
             {
