@@ -45,9 +45,6 @@ namespace SimpleMp3Decoder.Logic
         private FrameModel _frame;
         private FileStream _stream;
 
-
-        private static bool _isSeekingMainDataBeginZero = true;
-
         public static SynthesisFilter Filter1;
         public static SynthesisFilter Filter2;
 
@@ -132,8 +129,6 @@ namespace SimpleMp3Decoder.Logic
             }
             catch (Exception)
             {
-                _isSeekingMainDataBeginZero = true;
-
                 DecoderUtils.AudioDataBufferStream?.Clear();
                 IsFrameHealthy = false;
             }
@@ -159,8 +154,6 @@ namespace SimpleMp3Decoder.Logic
             }
             catch (Exception)
             {
-                _isSeekingMainDataBeginZero = true;
-
                 DecoderUtils.AudioDataBufferStream?.Clear();
                 IsFrameHealthy = false;
             }
@@ -1415,7 +1408,6 @@ namespace SimpleMp3Decoder.Logic
         internal static void PipelineReset()
         {
             DecoderUtils.Clean();
-            _isSeekingMainDataBeginZero = true;
         }
 
         #endregion
