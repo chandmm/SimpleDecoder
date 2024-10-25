@@ -215,8 +215,6 @@ namespace SimpleMp3Decoder.Data
 
             Write(buffer, offset, bytesRead);
 
-            _dbRMSValues = GetVuAdjustedValues(buffer);
-
             _position += bytesRead;
 
             return bytesRead;
@@ -259,86 +257,5 @@ namespace SimpleMp3Decoder.Data
                 _isDisposed = true;
             }
         }
-
-        private (float left, float right, float difference) CalculateVULevels(byte[] pcmBuffer)
-        {
-            int bytesPerSample = 2; // Should be 2 for 16-bit audio
-            int channels = HeaderInfoUtils.GetNumberOfChannels(_frames[_framePosition].Header);
-
-            int totalSamples = pcmBuffer.Length / (bytesPerSample * channels);
-            double sumSquaresLeft = 0;
-            double sumSquaresRight = 0;
-            double reference = 32768.0; // Reference value for 16-bit audio
-
-            if (channels == 2) // Stereo
-            {
-                for (int i = 0; i < pcmBuffer.Length; i += bytesPerSample * 2)
-                {
-                    short leftSample = BitConverter.ToInt16(pcmBuffer, i);
-                    short rightSample = BitConverter.ToInt16(pcmBuffer, i + bytesPerSample);
-
-                    sumSquaresLeft += leftSample * leftSample;
-                    sumSquaresRight += rightSample * rightSample;
-                }
-
-                double rmsLeft = Math.Sqrt(sumSquaresLeft / totalSamples) / reference;
-                double rmsRight = Math.Sqrt(sumSquaresRight / totalSamples) / reference;
-
-                float dBLeft = 20 * (float)Math.Log10(rmsLeft + 1e-10f);
-                float dBRight = 20 * (float)Math.Log10(rmsRight + 1e-10f);
-
-                // Calculate the difference to detect panning
-                float difference = dBLeft - dBRight;
-
-                return (dBLeft, dBRight, difference);
-            }
-            else // Mono
-            {
-                for (int i = 0; i < pcmBuffer.Length; i += bytesPerSample)
-                {
-                    short sample = BitConverter.ToInt16(pcmBuffer, i);
-                    sumSquaresLeft += sample * sample;
-                }
-
-                double rms = Math.Sqrt(sumSquaresLeft / totalSamples) / reference;
-                float dB = 20 * (float)Math.Log10(rms + 1e-10f);
-
-                return (dB, dB, 0.0f); // No difference in mono
-            }
-        }
-
-        private (float, float, float) GetVuAdjustedValues(byte[] pcmBuffer)
-        {
-            if (_frames.Count == 0
-                || _frames.Count() == _framePosition)
-            {
-                return (0.0f, 0.0f, 0.0f);
-            }
-
-            (float dBLeft, float dBRight, float difference) calculatedValues = CalculateVULevels(pcmBuffer);
-
-            // Adjust the values based on panning
-            float adjustedLeft = calculatedValues.dBLeft;
-            float adjustedRight = calculatedValues.dBRight;
-
-            float panSensitivity = 0.5f; // Adjust this sensitivity factor as needed
-
-            if (calculatedValues.difference > 0) // Panning towards the left
-            {
-                adjustedRight -= calculatedValues.difference * panSensitivity;
-            }
-            else if (calculatedValues.difference < 0) // Panning towards the right
-            {
-                adjustedLeft += calculatedValues.difference * panSensitivity;
-            }
-
-            // Ensure the values are within a reasonable range
-            adjustedLeft = Math.Max(-60, Math.Min(0, adjustedLeft));  // Example range: -60 dB to 0 dB
-            adjustedRight = Math.Max(-60, Math.Min(0, adjustedRight));  // Example range: -60 dB to 0 dB
-
-            return (adjustedLeft, adjustedRight, calculatedValues.difference);
-        }
-
-        public (float, float, float) GetRmsValues() => _dbRMSValues;
     }
 }
