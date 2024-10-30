@@ -169,15 +169,35 @@ namespace SimpleMp3Decoder.Logic
 
         internal void DecodeWithSeek(List<FrameModel> frames, int offset) => GetBitReservoirBytes(frames, offset);
 
-        // TODO: Add CRC check.
-        public void BypassCRCBytes()
+        public bool CheckCrcBytes(FileStream _stream)
         {
-            // Skip over CRC bytes
-
-            if (_header.ProtectionBit == 0)
+            if (_header.ProtectionBit != 0)
             {
-                DecoderUtils.FrameBufferStream.PopRange(2);
+                return true;
             }
+
+            var position = _stream.Position;
+            var partHeaderForCrcCompute = 2;
+            var crcBytesSize = 2;
+            var sideInfoSize = HeaderInfoUtils.GetNumberOfChannels(_frame.Header) == 1 ? 17 : 32;
+            var bytes = new byte[partHeaderForCrcCompute + crcBytesSize + sideInfoSize];
+
+            _stream.Position = _frame.FramePosition + 2;
+            _stream.Read(bytes, 2, partHeaderForCrcCompute); // Store header at index 2-3
+            _stream.Read(bytes, 0, crcBytesSize); // Store crc bytes at index 0-1
+            _stream.Read(bytes, 4, sideInfoSize); // Store side info from index 4 to sideInfoSize.
+            //structure of bytes array at this point: [2 bytes crc16|last 2 bytes of header|17(mono) or 32(> 1 channel) bytes side info]
+
+            var calculatedCRC16 = Crc16.ComputeCrc(bytes.Skip(crcBytesSize).ToArray(), 0, partHeaderForCrcCompute + sideInfoSize);
+
+            _stream.Position -= sideInfoSize;
+            _stream.Position = position + 2;
+
+            DecoderUtils.FrameBufferStream.PopRange(2);
+
+            return (BitConverter.IsLittleEndian
+                ? (BitConverter.ToUInt16(bytes.Take(crcBytesSize).Reverse().ToArray()))
+                : BitConverter.ToUInt16(bytes.Take(crcBytesSize).ToArray())) == calculatedCRC16;
         }
 
         internal void DecodeSideInfo()
@@ -189,7 +209,10 @@ namespace SimpleMp3Decoder.Logic
 
             DecoderUtils.FrameBufferStream.PushRange(bytes);
 
-            BypassCRCBytes();
+            if (!CheckCrcBytes(_stream))
+            {
+                return;
+            }
 
             DecodeSideInfoInternal();
         }
