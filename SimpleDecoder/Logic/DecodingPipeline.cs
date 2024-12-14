@@ -45,6 +45,7 @@ namespace SimpleMp3Decoder.Logic
         private FrameModel _frame;
         private FileStream _stream;
 
+        public static bool EnableCrcCheck { get; set; }
         public static SynthesisFilter Filter1;
         public static SynthesisFilter Filter2;
 
@@ -171,6 +172,13 @@ namespace SimpleMp3Decoder.Logic
 
         public bool CheckCrcBytes(FileStream _stream)
         {
+            if (!EnableCrcCheck)
+            {
+                var discardBytes = new byte[2];
+                _ = _stream.Read(discardBytes);
+                return true;
+            }
+
             if (_header.ProtectionBit != 0)
             {
                 return true;
@@ -258,6 +266,11 @@ namespace SimpleMp3Decoder.Logic
                 return;
             }
 
+            ProcessDecodeFrame();
+        }
+
+        private void ProcessDecodeFrame()
+        {
             for (int gr = 0; gr < 2; gr++)
             {
                 var hybrid = new HybridComputationLogic(SideInfo);

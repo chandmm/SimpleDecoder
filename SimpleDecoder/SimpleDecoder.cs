@@ -35,9 +35,10 @@ namespace SimpleMp3Decoder
         private FileStream _stream;
         private bool _isDisposed;
 
-        public SimpleDecoder(string filename, Action<int> decodingPositionCallback)
+        public SimpleDecoder(string filename, Action<int> decodingPositionCallback, bool enableCrcCheck = false)
         {
             DecodingPipeline.PipelineReset();
+            DecodingPipeline.EnableCrcCheck = enableCrcCheck;
 
             _filename = filename;
 
