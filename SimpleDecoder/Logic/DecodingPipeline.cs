@@ -121,7 +121,8 @@ namespace SimpleMp3Decoder.Logic
 
                 if (sideInfoException != null)
                 {
-                    throw new Exception(sideInfoException.Message, sideInfoException);
+                    //throw new Exception(sideInfoException.Message, sideInfoException);
+                    return;
                 }
 
                 _buffer = _buffer ?? new PcmBuffer(HeaderInfoUtils.GetNumberOfChannels(_header));
@@ -172,10 +173,11 @@ namespace SimpleMp3Decoder.Logic
 
         public bool CheckCrcBytes(FileStream _stream)
         {
-            if (!EnableCrcCheck)
+            if (!EnableCrcCheck
+                && _header.ProtectionBit == 0)
             {
-                var discardBytes = new byte[2];
-                _ = _stream.Read(discardBytes);
+                DecoderUtils.FrameBufferStream.PopRange(2);
+                _stream.Position += 2;
                 return true;
             }
 

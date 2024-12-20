@@ -82,11 +82,18 @@ namespace SimpleMp3Decoder.Models
 
         public string ToStringShort()
         {
-            var rawMetadata = ToString();
+            try
+            {
+                var rawMetadata = ToString();
 
-            var sideInfoStripped = rawMetadata.Remove(rawMetadata.IndexOf("SIDEINFO"));
+                var sideInfoStripped = rawMetadata.Remove(rawMetadata.IndexOf("SIDEINFO"));
 
-            return sideInfoStripped.Remove(0, sideInfoStripped.IndexOf("Mpeg"));
+                return sideInfoStripped.Remove(0, sideInfoStripped.IndexOf("Mpeg"));
+            }
+            catch
+            {
+                return "No data.";
+            }
         }
 
         #endregion

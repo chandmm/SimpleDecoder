@@ -15,4 +15,8 @@
     </None>
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot; &quot;$(SolutionDir)\..\DigitalAudioExperiment\DigitalAudioExperiment\ExternalDependencies\$(TargetFileName)&quot; /Y" />
+  </Target>
+
 </Project>

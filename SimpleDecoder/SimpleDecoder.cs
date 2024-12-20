@@ -89,7 +89,11 @@ namespace SimpleMp3Decoder
 
             foreach (var frame in _frames)
             {
-                frame.GetDecodingPipeline().DecodeSideInfo();
+                try
+                {
+                    frame.GetDecodingPipeline().DecodeSideInfo();
+                }
+                catch { }
             }
         }
 
